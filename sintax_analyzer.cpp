@@ -87,17 +87,29 @@ bool Analyzer::AnaliseDropTable()
 bool Analyzer::AnaliseSelect()
 {
     std::vector<Token> TokensLine = Token::GetTokens(command);
-    if(TokensLine.size() < 4 ) return false;
+	size_t pos = 2;
+    if(TokensLine.size() < 5 ) return false;
     if (TokensLine[0].GetType() != token_type::MainOperator) return false;
     if (TokensLine[1].GetType() != token_type::Identifier) return false;
-    if (TokensLine[2].GetType() != token_type::FROM) return false;
-    if (TokensLine[3].GetType() != token_type::Identifier) return false;
-    if (TokensLine[4].GetType() == token_type::WHERE) {
-        if (TokensLine[5].GetType() != token_type::Identifier) return false;
-        if (TokensLine[6].GetType() != token_type::SMCLN) return false;
-        //TODO реализовать что может быть после WHERE после WHERE надо писать GROUP BY
-    }else if (TokensLine[4].GetType() == token_type::SMCLN) return true;
+	if (TokensLine[2].GetType() == token_type::COMMA) {
+		for(; ;) {
+			if (TokensLine.at(++pos).GetType() != token_type::Identifier) return false;
+			if (TokensLine.at(++pos).GetType() != token_type::COMMA) break;
+		}
+	}
+    if (TokensLine.at(pos).GetType() != token_type::FROM) return false;
+    if (TokensLine.at(++pos).GetType() != token_type::Identifier) return false;
+    if (TokensLine.at(++pos).GetType() == token_type::WHERE) {
+        return (AnaliseWhere(TokensLine, pos));
+    }else if (TokensLine.at(pos).GetType() != token_type::SMCLN) return false;
     return true;
+}
+
+bool Analyzer::AnaliseWhere(std::vector<Token>& TokensLine, size_t& pos)
+{
+	if (TokensLine.at(++pos).GetType() != token_type::Identifier) return false;
+	if (TokensLine.at(++pos).GetType() != token_type::CMP) return false;
+
 }
 
 bool Analyzer::AnaliseUpdate()
@@ -153,6 +165,7 @@ int main()
 	std::string text3 = "alter table tablename add id int;";
     std::string text4 = "select a from b;";
     std::string text5 = "select a from b where c;";
+	std::string text6 = "select a, b from c where d;";
 
 	Analyzer analyzer;
 	std::cout << analyzer.StartAnalis(text1) << std::endl;
@@ -160,6 +173,7 @@ int main()
 	std::cout << analyzer.StartAnalis(text3) << std::endl;
     std::cout << analyzer.StartAnalis(text4) << std::endl;
     std::cout << analyzer.StartAnalis(text5) << std::endl;
+	std::cout << analyzer.StartAnalis(text6) << std::endl;
 	return 0;
 }
 

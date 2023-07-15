@@ -24,6 +24,7 @@ private:
 	std::string command;
 	void initialise();
 	bool StrStartsWith(std::string);
+	bool AnaliseWhere(std::vector<Token>&, size_t&);
 public:
 	Analyzer();
 	bool AnaliseCreateTable();

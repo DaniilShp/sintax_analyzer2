@@ -27,7 +27,8 @@ enum class token_type
     WHERE,
     UPDATE,
     SET,
-    GRB //Group by
+    GRB, //Group by
+    CMP  //comparison symbols: =, <, >, !, 
 };
 
 class Token
