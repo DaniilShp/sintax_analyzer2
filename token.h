@@ -1,3 +1,4 @@
+#pragma once
 
 #include <string>
 #include <iostream>
@@ -21,8 +22,12 @@ enum class token_type
     DOT,  // .
     COMMA, // ,
     SMCLN,  // ; semicolon
+    WRT, // =
     FROM,
-    WHERE
+    WHERE,
+    UPDATE,
+    SET,
+    GRB //Group by
 };
 
 class Token
