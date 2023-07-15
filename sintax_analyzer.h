@@ -1,17 +1,19 @@
-#pragma once
 
-const int CommandsAmount = 3;
 
-enum class CommandType { // ������ �������������: CommandNames[(int)CommandType::CREATE] = "create table" � � CommandTypesFunctions �������� ����������
+const int CommandsAmount = 4;
+
+enum class CommandType {
 	CREATE,
 	ALTER,
-	DROP
+	DROP,
+    SELECT
 };
 
-const std::string CommandNames[CommandsAmount] = { // ����������� ������ ��� ��������� ����������, � ������� ����� ���������� ������
+const std::string CommandNames[CommandsAmount] = {
 	"create table",
 	"alter table",
-	"drop table"
+	"drop table",
+    "select"
 };
 
 class Analyzer
@@ -25,14 +27,15 @@ public:
 	bool AnaliseCreateTable();
 	bool AnaliseAlterTable();
 	bool AnaliseDropTable();
+    bool AnaliseSelect();
 	bool StartAnalis(std::string command);
 
 };
 
-typedef bool (Analyzer::* TypeCommandAnalise)();		//��� ������, �������������� ����� ��������� �� �����
+typedef bool (Analyzer::* TypeCommandAnalise)();
 
-const TypeCommandAnalise CommandTypesFunctions[CommandsAmount] = { // ����������� ������ ��� ��������� ����������, � ������� ����� ���������� ������
-	&Analyzer::AnaliseCreateTable,	// ����� ������� ��� ������������������ ������ ��� ������� ���� �������
+const TypeCommandAnalise CommandTypesFunctions[CommandsAmount] = {
+	&Analyzer::AnaliseCreateTable,
 	&Analyzer::AnaliseAlterTable,
 	&Analyzer::AnaliseDropTable
 };

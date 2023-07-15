@@ -1,4 +1,3 @@
-#pragma once
 
 #include <string>
 #include <iostream>
@@ -21,7 +20,9 @@ enum class token_type
     RSQR, // ]
     DOT,  // .
     COMMA, // ,
-    SMCLN  // ; semicolon
+    SMCLN,  // ; semicolon
+    FROM,
+    WHERE
 };
 
 class Token

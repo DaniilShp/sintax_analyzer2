@@ -1,8 +1,7 @@
-﻿
-
-#include "token.h"
+﻿#include "token.h"
 #include "sintax_analyzer.h"
 
+#include <algorithm>
 #include <iostream>
 #include <regex> // не стоит это использовать
 #include <string>
@@ -54,17 +53,17 @@ bool Analyzer::AnaliseAlterTable()
 	if (TokensLine[0].GetType() != token_type::MainOperator && TokensLine[1].GetType() != token_type::MainOperator)
 		return false;
 	if (TokensLine[2].GetType() != token_type::Identifier) return false;
-	if ((TokensLine[3].GetName()) == "add") {
+	if ((TokensLine[3].GetName()) == "add" ) {
 		if (TokensLine[++i].GetType() != token_type::Identifier) return false;
 		if (TokensLine[++i].GetType() != token_type::VariableType) return false;
 	}
 	else if ((TokensLine[3].GetName()) == "alter") {
-		if (!(TokensLine[++i].GetName() == "column")) return false;
+		if ((TokensLine[++i].GetName()) == "column") return false;
 		if (TokensLine[++i].GetType() != token_type::Identifier) return false;
 		if (TokensLine[++i].GetType() != token_type::VariableType) return false;
 	}
 	else if ((TokensLine[3].GetName()) == "drop") {
-		if (!(TokensLine[++i].GetName() == "column")) return false;
+		if ((TokensLine[++i].GetName()) == "column") return false;
 		if (TokensLine[++i].GetType() != token_type::Identifier) return false;
 	}
 	else return false;
@@ -83,6 +82,23 @@ bool Analyzer::AnaliseDropTable()
 	if (TokensLine[2].GetType() != token_type::Identifier) return false;
 	if (TokensLine[3].GetType() != token_type::SMCLN) return false;
 	return true;
+}
+
+bool Analyzer::AnaliseSelect()
+{
+    std::vector<Token> TokensLine = Token::GetTokens(command);
+    if(TokensLine.size() <= 4 )
+    if (TokensLine[0].GetType() != token_type::MainOperator) return false;
+    if (TokensLine[1].GetType() != token_type::Identifier) return false;
+    if (TokensLine[2].GetType() != token_type::FROM) return false;
+    if (TokensLine[3].GetType() != token_type::Identifier) return false;
+    if (TokensLine[4].GetType() != token_type::WHERE) {
+        if (TokensLine[5].GetType() != token_type::Identifier) return false;
+        if (TokensLine[6].GetType() != token_type::SMCLN) return false;
+        //TODO реализовать что может быть после WHERE после WHERE надо писать GROUP BY
+    }
+    if (TokensLine[4].GetType() != token_type::SMCLN) return false;
+    return true;
 }
 
 bool Analyzer::StrStartsWith(std::string key) // проверка с какого ключевого слова начинается запрос
@@ -119,6 +135,8 @@ int main()
 	std::string text1 = "drop table tablename;";
 	std::string text2 = "create table tablename (id int, data date, cost int);";
 	std::string text3 = "alter table tablename add id int;";
+    std::string text4 = "select a from b;";
+    std::string text5 = "select a from b where c;";
 	Analyzer analyzer;
 	std::cout << analyzer.StartAnalis(text1) << std::endl;
 	std::cout << analyzer.StartAnalis(text2) << std::endl;
