@@ -12,7 +12,7 @@ enum class token_type
     MainOperator,
     SecondaryOperator,
     VariableType,
-    constant,
+    CONST,// "text", 12, 0.984561
     LBRA, // {
     RBRA, // }
     LPAR, // (
@@ -27,7 +27,7 @@ enum class token_type
     WHERE,
     UPDATE,
     SET,
-    GRB, //Group by
+    GRB, //Group by токен состоит из 2 слов и будет разделен, стоит это учесть
     CMP  //comparison symbols: =, <, >, !, 
 };
 
@@ -38,6 +38,7 @@ private:
     token_type type;
     token_type FindType(const std::string&);
     bool IsIdentifier(const std::string& str);
+    bool IsConst(const std::string& str);
 public:
     Token(const std::string& tkn) { name = tkn; type = this->FindType(tkn); };
     token_type GetType() { return this->type; };

@@ -108,8 +108,21 @@ bool Analyzer::AnaliseSelect()
 bool Analyzer::AnaliseWhere(std::vector<Token>& TokensLine, size_t& pos)
 {
 	if (TokensLine.at(++pos).GetType() != token_type::Identifier) return false;
-	if (TokensLine.at(++pos).GetType() != token_type::CMP) return false;
-
+	if (TokensLine.at(++pos).GetType() == token_type::SMCLN) return true;
+	if (TokensLine.at(++pos).GetType() != token_type::CMP && TokensLine.at(pos).GetType() != token_type::WRT) {
+		if (TokensLine.at(++pos).GetType() != token_type::CONST) return false;
+	}
+	if (TokensLine.at(pos).GetName() != "group") {
+		if (TokensLine.at(++pos).GetName() != "by") return false;
+		if (TokensLine.at(++pos).GetType() != token_type::Identifier) return false;
+	}
+	if (TokensLine.at(pos).GetName() != "order") {
+		if (TokensLine.at(++pos).GetName() != "by") return false;
+		if (TokensLine.at(++pos).GetType() != token_type::Identifier) return false;
+		if (TokensLine.at(++pos).GetName() != "desc" && TokensLine.at(++pos).GetName() != "asc") return false;
+	}
+	if (TokensLine.at(pos).GetType() == token_type::SMCLN) return true;
+	return true;
 }
 
 bool Analyzer::AnaliseUpdate()
@@ -161,12 +174,13 @@ bool Analyzer::StartAnalis(std::string _command)	//запуск анализа
 int main()
 {
 	std::string text1 = "";
-	std::string text2 = "create table tablename (id int, data date, cost int);";
+	std::string text2 = "create table.s tablename (id int, data date, cost int);";
 	std::string text3 = "alter table tablename add id int;";
     std::string text4 = "select a from b;";
     std::string text5 = "select a from b where c;";
 	std::string text6 = "select a, b from c where d;";
-
+	std::string text7 = "select a, b from c where d = 5;"; //не работает
+	std::string text8 = "select a, b from c where d ! 0 order by s asc;"; //не работает
 	Analyzer analyzer;
 	std::cout << analyzer.StartAnalis(text1) << std::endl;
 	std::cout << analyzer.StartAnalis(text2) << std::endl;
@@ -174,6 +188,8 @@ int main()
     std::cout << analyzer.StartAnalis(text4) << std::endl;
     std::cout << analyzer.StartAnalis(text5) << std::endl;
 	std::cout << analyzer.StartAnalis(text6) << std::endl;
+	std::cout << analyzer.StartAnalis(text7) << std::endl;
+	std::cout << analyzer.StartAnalis(text8) << std::endl;
 	return 0;
 }
 
