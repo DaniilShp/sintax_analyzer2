@@ -37,5 +37,6 @@ typedef bool (Analyzer::* TypeCommandAnalise)();
 const TypeCommandAnalise CommandTypesFunctions[CommandsAmount] = {
 	&Analyzer::AnaliseCreateTable,
 	&Analyzer::AnaliseAlterTable,
-	&Analyzer::AnaliseDropTable
+	&Analyzer::AnaliseDropTable,
+	&Analyzer::AnaliseSelect
 };
