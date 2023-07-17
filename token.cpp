@@ -19,10 +19,10 @@ bool Token::IsIdentifier(const std::string& str)
 
 bool Token::IsConst(const std::string& str)
 {
-    if (str[0] != '"' || str[str.size()-1]!='"') return true;
+    if (str[0] == '"' && str[str.size()-1]=='"') return true;
     size_t DotCount = 0;
     for (char c : str) {
-        if ( c >= '9' || c <= '0' || c == '.' || DotCount > 1)
+        if (((c > '9' || c < '0') && c != '.' ) || DotCount > 1)
             return false;
         if (c == '.') DotCount++;
     }
@@ -44,6 +44,7 @@ token_type Token::FindType(const std::string& tkn) // ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï
     if (tkn =="where") return token_type::WHERE;
     if (tkn == "update") return token_type::UPDATE;
     if (tkn == "set") return token_type::SET;
+    if (IsConst(tkn)) return token_type::CONST;
     if (IsIdentifier(tkn)) return token_type::Identifier; // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     else return token_type::Error;
 }

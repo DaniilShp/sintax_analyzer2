@@ -109,14 +109,14 @@ bool Analyzer::AnaliseWhere(std::vector<Token>& TokensLine, size_t& pos)
 {
 	if (TokensLine.at(++pos).GetType() != token_type::Identifier) return false;
 	if (TokensLine.at(++pos).GetType() == token_type::SMCLN) return true;
-	if (TokensLine.at(++pos).GetType() != token_type::CMP && TokensLine.at(pos).GetType() != token_type::WRT) {
+	if (TokensLine.at(pos).GetType() == token_type::CMP || TokensLine.at(pos).GetType() == token_type::WRT) {
 		if (TokensLine.at(++pos).GetType() != token_type::CONST) return false;
 	}
-	if (TokensLine.at(pos).GetName() != "group") {
+	if (TokensLine.at(pos).GetName() == "group") {
 		if (TokensLine.at(++pos).GetName() != "by") return false;
 		if (TokensLine.at(++pos).GetType() != token_type::Identifier) return false;
 	}
-	if (TokensLine.at(pos).GetName() != "order") {
+	if (TokensLine.at(pos).GetName() == "order") {
 		if (TokensLine.at(++pos).GetName() != "by") return false;
 		if (TokensLine.at(++pos).GetType() != token_type::Identifier) return false;
 		if (TokensLine.at(++pos).GetName() != "desc" && TokensLine.at(++pos).GetName() != "asc") return false;
@@ -179,8 +179,8 @@ int main()
     std::string text4 = "select a from b;";
     std::string text5 = "select a from b where c;";
 	std::string text6 = "select a, b from c where d;";
-	std::string text7 = "select a, b from c where d = 5;"; //не работает
-	std::string text8 = "select a, b from c where d ! 0 order by s asc;"; //не работает
+	std::string text7 = "select a, b from c where d = 12.765 group by r;"; 
+	std::string text8 = "select a, b from c where d ! 0 group by r order by s asc;"; 
 	Analyzer analyzer;
 	std::cout << analyzer.StartAnalis(text1) << std::endl;
 	std::cout << analyzer.StartAnalis(text2) << std::endl;
@@ -210,4 +210,6 @@ ALTER TABLE название_таблицы
   ALTER COLUMN название_столбца тип_данных_столбца }
 
 DROP TABLE table_name
+
+select a, b, ... , z from b [where c] [group by] [order by]
 */
