@@ -1,3 +1,4 @@
+#pragma once
 
 #include <string>
 #include <iostream>
@@ -11,7 +12,7 @@ enum class token_type
     MainOperator,
     SecondaryOperator,
     VariableType,
-    constant,
+    CONST,// "text", 12, 0.984561
     LBRA, // {
     RBRA, // }
     LPAR, // (
@@ -21,8 +22,13 @@ enum class token_type
     DOT,  // .
     COMMA, // ,
     SMCLN,  // ; semicolon
+    WRT, // =
     FROM,
-    WHERE
+    WHERE,
+    UPDATE,
+    SET,
+    GRB, //Group by токен состоит из 2 слов и будет разделен, стоит это учесть
+    CMP  //comparison symbols: =, <, >, !, 
 };
 
 class Token
@@ -32,6 +38,7 @@ private:
     token_type type;
     token_type FindType(const std::string&);
     bool IsIdentifier(const std::string& str);
+    bool IsConst(const std::string& str);
 public:
     Token(const std::string& tkn) { name = tkn; type = this->FindType(tkn); };
     token_type GetType() { return this->type; };
